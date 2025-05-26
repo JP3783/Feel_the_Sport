@@ -24,8 +24,8 @@ void showBatteryStatus(){
   tft->fillRect(0, BOTTOM, 240, 20, TFT_BLACK); //Clear the bottom area
   //Check whether the battery is connected properly
   if (power->isBatteryConnect()) {
-      // To display the charging status, first discharge the battery,
-      // and it is impossible to read the full charge when it is fully charged
+      //To display the charging status, first discharge the battery,
+      //and it is impossible to read the full charge when it is fully charged
       if (power->isChargeing()) {
         tft->setCursor(0, BOTTOM);
         tft->println("BAT: charging        ");
@@ -57,25 +57,25 @@ void buzzManualHigh(int ms) {
 }
 
 void drawStickman(int x, int y, uint16_t color, bool step) {
-  // Clear a bounding box for redrawing
+  //Clear a bounding box for redrawing
   tft->fillRect(x - 15, y - 10, 40, 70, TFT_BLACK);
 
-  // Head (radius 10)
+  //Head (radius 10)
   tft->drawCircle(x, y, 10, color);
 
-  // Body
+  //Body
   tft->drawLine(x, y + 10, x, y + 40, color);
 
-  // Arms (horizontal)
+  //Arms (horizontal)
   tft->drawLine(x - 10, y + 20, x + 10, y + 20, color);
 
-  // Legs: alternate for walking effect
+  //Legs: alternate for walking effect
   if (step) {
     // Step position A
-    tft->drawLine(x, y + 40, x - 8, y + 60, color); // left leg
-    tft->drawLine(x, y + 40, x + 8, y + 50, color); // right leg slightly bent
+    tft->drawLine(x, y + 40, x - 8, y + 60, color); //left leg
+    tft->drawLine(x, y + 40, x + 8, y + 50, color); //right leg slightly bent
   } else {
-    // Step position B (swap legs)
+    //Step position B (swap legs)
     tft->drawLine(x, y + 40, x - 8, y + 50, color);
     tft->drawLine(x, y + 40, x + 8, y + 60, color);
   }
@@ -136,11 +136,19 @@ void setup() {
 void loop() {
   updateStickman();
 
-  // Read from Bluetooth
+  //Read from Bluetooth
   if (SerialBT.available()) {
     String cmd = SerialBT.readStringUntil('\n');
     Serial.print("BT Received: ");
     Serial.println(cmd);
+
+    if (cmd.startsWith("TIMESTAMP:")) {
+      String timePart = cmd.substring(10);
+      unsigned long watchMillis = millis();
+      //Reply with laptop's timestamp and watch millis
+      String response = "LAPTOP:" + timePart + ",WATCH:" + String(watchMillis);
+      SerialBT.println(response);
+    }
 
     int commaIndex = cmd.indexOf(',');
     if (commaIndex != -1) {
