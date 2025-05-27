@@ -1,3 +1,4 @@
+# #This is the code that sends a signal from the laptop to the watch via bluetooth
 # import serial
 
 # COM_PORT = 'COM7'  # Adjust if needed
@@ -17,6 +18,9 @@
 # except Exception as e:
 #     print(f"Unexpected error: {e}")
 
+
+
+#This is the code for implementing signal from the microbit, through thr laptop, and then to the watch
 import serial
 import time
 from datetime import datetime
