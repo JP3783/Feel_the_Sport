@@ -33,6 +33,7 @@ void loop() {
 
     //Check if it's a hit
     unsigned long now = millis();
+    //If magnitude is greater than the threshold AND 300 milliseconds have passed since the last hit
     if (mag > hitThreshold && (now - lastHitTime > hitCooldownMs)) {
       lastHitTime = now;
       Serial.print("Hit detected! Mag: ");
