@@ -19,7 +19,14 @@ const int hitCooldownMs = 300;        //Cooldown between hits
 //   if(power->isBatteryConnect()){
 //     if(power->isCharging()){
 //       tft->setCursor(0, 200);
+//       tft->println("BAT: charging        ");
+//     } else{
+//       tft->setCursor(0, 200);
+//       tft->print("BAT: "); tft->print(power->getBattPercentage()); tft->println("%");
 //     }
+//   } else{
+//     tft->setCursor(0, 200);
+//     tft->println("BAT: disconnected");
 //   }
 // }
 
@@ -27,8 +34,14 @@ void setup() {
   Serial.begin(115200);
   while (!Serial);
 
-  //Initialise watch and accelerometer
+  //Initialize screen and power
+  ttgo = TTGOClass::getWatch();
   ttgo->begin();
+  ttgo->openBL(); //Turn on backlight
+
+  tft = ttgo->tft;
+
+  //Initialise accelerometer
   ttgo->bma->begin();
   ttgo->bma->enableAccel();
 
@@ -37,6 +50,8 @@ void setup() {
   //Start Bluetooth with this device name
   SerialBT.begin("T-Watch Sensor");
   Serial.println("Bluetooth started. T-Watch Sensor initialised.");
+
+  // showBatteryStatus();
 }
 
 void loop() {
@@ -64,6 +79,10 @@ void loop() {
     //If magnitude is greater than the threshold AND 300 milliseconds have passed since the last hit
     if (mag > hitThreshold && (now - lastHitTime > hitCooldownMs)) {
       lastHitTime = now;
+      String hitMsg = "Hit detected! Mag: " + String(mag, 3);
+      Serial.println(hitMsg);         //Debug log
+      SerialBT.println(hitMsg);       //Send to laptop via Bluetooth
+
       Serial.print("Hit detected! Mag: ");
       Serial.println(mag, 3);
     }
