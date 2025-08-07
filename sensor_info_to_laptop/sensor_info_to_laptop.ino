@@ -4,14 +4,13 @@
 
 TTGOClass *ttgo = TTGOClass::getWatch();
 
-Accel accelData;  // Declare accelData here — note the space between 'Accel' and 'accelData'
+Accel accelData; //Accel struct
 
 void setup() {
   Serial.begin(115200);
   while (!Serial);
 
   ttgo->begin();
-
   ttgo->bma->begin();
   ttgo->bma->enableAccel();
 
@@ -21,12 +20,18 @@ void setup() {
 
 void loop() {
   if (ttgo->bma->getAccel(accelData)) {
+    // Serial.println(sizeof(accelData.x));
+    //Convert raw int values to g
+    float ax = accelData.x * 0.00098;
+    float ay = accelData.y * 0.00098;
+    float az = accelData.z * 0.00098;
+
     Serial.print("X: ");
-    Serial.print(accelData.x, 3);
+    Serial.print(ax, 3);
     Serial.print("  Y: ");
-    Serial.print(accelData.y, 3);
+    Serial.print(ay, 3);
     Serial.print("  Z: ");
-    Serial.println(accelData.z, 3);
+    Serial.println(az, 3);
   } else {
     Serial.println("Failed to read acceleration");
   }
