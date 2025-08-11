@@ -70,9 +70,9 @@ void loop() {
                      "  Z: " + String(az, 3) +
                      "  Mag: " + String(mag, 3);
 
-    // //Send raw data
-    // Serial.println(rawData);
-    // SerialBT.println(rawData);
+    //Send raw data
+    Serial.println(rawData);
+    SerialBT.println(rawData);
 
     //Check if it's a hit
     unsigned long now = millis();
