@@ -1,6 +1,6 @@
 import serial
 
-COM_PORT = 'COM8'  # Adjust if needed
+COM_PORT = 'COM7'  # Adjust if needed
 BAUD_RATE = 115200
 
 try:
