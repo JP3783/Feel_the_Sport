@@ -1,13 +1,14 @@
 import serial
 import csv
 import time
+from datetime import datetime
 
-COM_PORT = 'COM7'     #Bluetooth serial port - adjust if needed
+COM_PORT = 'COM3'     #Bluetooth serial port - adjust if needed
                       #How? Upload arduino program and pair watch with laptop. See Device Manager for COM Ports
 BAUD_RATE = 115200
 
 CSV_FILENAME = "tennis_hits.csv"
-DURATION_SECONDS = 60
+DURATION_SECONDS = 10
 
 
 try:
@@ -32,8 +33,9 @@ try:
                         try:
                             parts = line.replace("X:", "").replace("Y:", "").replace("Z:", "").replace("Mag:", "").split()
                             x, y, z, mag = map(float, parts[:4])
-                            notes = "HIT" if "HIT" in line else ""
-                            writer.writerow([time.strftime("%H:%M:%S"), x, y, z, mag, notes])
+                            notes = "HIT" if mag > 2 else ""
+                            timestamp = datetime.now().strftime("%H:%M:%S.%f")[:-3]
+                            writer.writerow([timestamp, x, y, z, mag, notes])
                         except:
                             #skip lines that don't match expected format
                             pass
