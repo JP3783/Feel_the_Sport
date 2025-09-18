@@ -136,7 +136,7 @@ void setup() {
 void loop() {
   updateStickman();
 
-  // Read from Bluetooth
+  //Read from Bluetooth
   if (SerialBT.available()) {
     String cmd = SerialBT.readStringUntil('\n');
     Serial.print("BT Received: ");
@@ -149,8 +149,10 @@ void loop() {
       strength.trim();
 
       if (strength.equalsIgnoreCase("Low")) {
+        SerialBT.println("ACK");
         buzzManualLow(duration);
       } else if (strength.equalsIgnoreCase("High")) {
+        SerialBT.println("ACK");
         buzzManualHigh(duration);
       } else {
         Serial.println("Invalid strength. Use Low/High.");
