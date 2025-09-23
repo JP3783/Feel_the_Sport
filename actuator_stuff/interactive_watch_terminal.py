@@ -15,15 +15,15 @@ try:
             start = time.perf_counter()
             ser.write((user_input + '\n').encode())
 
-            #wait for ACK
-            ack = ser.readline().decode().strip()
-            end = time.perf_counter()
+            # #wait for ACK
+            # ack = ser.readline().decode().strip()
+            # end = time.perf_counter()
 
-            if ack == "ACK":
-                latency_ms = (end - start) *1000
-                print(f"ACK received in {latency_ms:.2f} ms")
-            else:
-                print("No ACK or invalid response:", ack)
+            # if ack == "ACK":
+            #     latency_ms = (end - start) *1000
+            #     print(f"ACK received in {latency_ms:.2f} ms")
+            # else:
+            #     print("No ACK or invalid response:", ack)
 except serial.SerialException as e:
     print(f"Serial error: {e}")
 except Exception as e:

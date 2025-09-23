@@ -6,12 +6,14 @@
 #include <stdio.h>
 #include <string.h>
 
+
 TTGOClass *ttgo = TTGOClass::getWatch();
 TFT_eSPI *tft;
 Accel accelData;
 BluetoothSerial SerialBT;
 AXP20X_Class *power;
 char buf[128];
+
 // bool rtcIrq = false;
 
 unsigned long lastHitTime = 0;
@@ -66,6 +68,7 @@ void syncRTCWithLaptopTime(){
 
 void setup() {
   Serial.begin(115200);
+  
   while (!Serial);
 
   //Initialize screen and power

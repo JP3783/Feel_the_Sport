@@ -7,6 +7,7 @@ TTGOClass *ttgo;
 TFT_eSPI *tft;
 AXP20X_Class *power;
 BluetoothSerial SerialBT;
+
 const int VIBRATION_PIN = 4;
 const int TOP = 0;
 const int CENTRE_FIRST = 100;
@@ -46,6 +47,17 @@ void buzzManualLow(int ms) {
     delay(20);
     digitalWrite(VIBRATION_PIN, LOW);
     delay(230);
+    elapsed += 250;
+  }
+}
+
+void buzzManualMed(int ms) {
+  int elapsed = 0;
+  while (elapsed < ms) {
+    digitalWrite(VIBRATION_PIN, HIGH);
+    delay(50);
+    digitalWrite(VIBRATION_PIN, LOW);
+    delay(180);
     elapsed += 250;
   }
 }
@@ -149,11 +161,13 @@ void loop() {
       strength.trim();
 
       if (strength.equalsIgnoreCase("Low")) {
-        SerialBT.println("ACK");
+        // SerialBT.println("ACK");
         buzzManualLow(duration);
       } else if (strength.equalsIgnoreCase("High")) {
-        SerialBT.println("ACK");
+        // SerialBT.println("ACK");
         buzzManualHigh(duration);
+      } else if (strength.equalsIgnoreCase("Med")){
+        buzzManualMed(duration);
       } else {
         Serial.println("Invalid strength. Use Low/High.");
       }
