@@ -32,10 +32,6 @@ def mag_to_strength(mag):
 try:
     #Load CSV
     df = pd.read_csv(CSV_FILE)
-    # df = df.sort_values("Time").reset_index(drop=True)
-
-    #Keep only events with magnitude >= 2
-    # df = df[df["Mag"] >= 2]
 
     #open serial port
     try:
@@ -45,25 +41,8 @@ try:
         print(f"Serial error: {exception}")
         ser = None
 
-    # print(f"ser: {ser}")
-
     #open video
     cap = cv2.VideoCapture(VIDEO_FILE)
-    # print("[DEBUG] Current working directory:", os.getcwd())
-    # if not cap.isOpened():
-    #     print(f"[ERROR] Failed to open video file: {VIDEO_FILE}")
-    #     print("       Double-check the path and file format.")
-    #     exit(1)
-    # else:
-    #     print(f"[INFO] Successfully opened video: {VIDEO_FILE}")
-    
-    if not cap.isOpened():
-        print(f"[ERROR] Failed to open video: {VIDEO_FILE}")
-        print("Double-check the path and file format.")
-        exit(1)
-    else:
-        print("[INFO] Video opened successfully.")
-
 
     #start playback timer
     start_time = time.perf_counter()
@@ -73,22 +52,8 @@ try:
     total_events = len(df)
     print(f"Playing video and listening for {total_events} vibration events...")
 
-    # if cap.isOpened():
-    #     check = True
-    # elif not cap.isOpened():
-    #     check = False
-
-    # print(f"check: {check}")
-
-    # print(f"cap.isOpened: {cap.isOpened}")
-    # print(f"cap.isOpened(): {cap.isOpened()}")
-
     while cap.isOpened():
-        # print(f"it reaches here bao")
         ret, frame = cap.read()
-        # print(f"ret: {ret}")
-        # print(f"frame: {frame}")
-        # print(f"cap.read(): {cap.read()}")
         if not ret:
             break
         cv2.imshow("Tennis Session", frame)

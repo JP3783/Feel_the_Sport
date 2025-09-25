@@ -89,7 +89,7 @@ void setup() {
   Serial.println("Tennis hit detection started...");
 
   //Start Bluetooth with this device name
-  SerialBT.begin("FeeltheSportWatch");
+  SerialBT.begin("Sensor_Watch");
   Serial.println("Bluetooth started. FeeltheSportWatch initialised.");
 
   tft->setTextFont(2);
