@@ -1,7 +1,7 @@
 #include "config.h"
+#include <BluetoothSerial.h>
 #include <stdio.h>
 #include <string.h>
-#include <BluetoothSerial.h>
 
 TTGOClass *ttgo;
 TFT_eSPI *tft;
@@ -9,35 +9,66 @@ AXP20X_Class *power;
 BluetoothSerial SerialBT;
 
 const int VIBRATION_PIN = 4;
-const int TOP = 0;
-const int CENTRE_FIRST = 100;
-const int CENTRE_SECOND = 140;
-const int BOTTOM = 200;
 
-//Stickman constants
-int stickmanX = 0;
-unsigned long lastFrameTime = 0;
-bool walkingPaused = false;
-unsigned long pauseStartTime = 0;
-bool stepToggle = false;  //toggles to animate steps
+//LVGL objects
+lv_obj_t *batteryLabel;
+lv_obj_t *titleLabel;
 
-void showBatteryStatus(){
-  tft->fillRect(0, BOTTOM, 240, 20, TFT_BLACK); //Clear the bottom area
-  //Check whether the battery is connected properly
-  if (power->isBatteryConnect()) {
-      // To display the charging status, first discharge the battery,
-      // and it is impossible to read the full charge when it is fully charged
-      if (power->isChargeing()) {
-        tft->setCursor(0, BOTTOM);
-        tft->println("BAT: charging        ");
-      } else {
-        tft->setCursor(0, BOTTOM);
-        tft->print("BAT: "); tft->print(power->getBattPercentage()); tft->println("%");    
-      }
-  } else {
-      tft->setCursor(0, BOTTOM);
-      tft->println("BAT: disconnected");
-  }
+static void event_handler(lv_obj_t *obj, lv_event_t event)
+{
+    if (event == LV_EVENT_CLICKED) {
+        Serial.println("Clicked");
+    }
+}
+
+void updateBatteryStatus() {
+    if (!batteryLabel) return;
+
+    String text = "BAT: ";
+    if (power->isBatteryConnect()) {
+        if (power->isChargeing()) {
+            text += "charging";
+        } else {
+            text += String(power->getBattPercentage()) + "%";
+        }
+    } else {
+        text = "BAT: disconnected";
+    }
+
+    lv_label_set_text(batteryLabel, text.c_str());
+}
+
+void setupUI() {
+    //Create style for title
+    static lv_style_t style_title;
+    lv_style_init(&style_title);
+    lv_style_set_text_font(&style_title, LV_STATE_DEFAULT, &lv_font_montserrat_28); // 28px for title
+
+    //Create style for battery
+    static lv_style_t style_battery;
+    lv_style_init(&style_battery);
+    lv_style_set_text_font(&style_battery, LV_STATE_DEFAULT, &lv_font_montserrat_28); // 20px for battery
+
+    //Title label at top
+    titleLabel = lv_label_create(lv_scr_act(), NULL);
+    lv_obj_add_style(titleLabel, LV_LABEL_PART_MAIN, &style_title);
+    lv_label_set_text(titleLabel, "Feel the Sport");
+    lv_obj_align(titleLabel, NULL, LV_ALIGN_IN_TOP_MID, 0, 10); //top-center
+
+    //Center button
+    lv_obj_t *btn = lv_btn_create(lv_scr_act(), NULL);
+    lv_obj_set_event_cb(btn, event_handler);
+    lv_obj_align(btn, NULL, LV_ALIGN_CENTER, 0, 0); //center of screen
+
+    lv_obj_t *label = lv_label_create(btn, NULL);
+    lv_label_set_text(label, "Start");
+
+    //Battery label at bottom
+    batteryLabel = lv_label_create(lv_scr_act(), NULL);
+    lv_obj_add_style(batteryLabel, LV_LABEL_PART_MAIN, &style_battery);
+    lv_obj_align(batteryLabel, NULL, LV_ALIGN_IN_BOTTOM_MID, -80, 0);
+
+    updateBatteryStatus();
 }
 
 void buzzManualLow(int ms) {
@@ -68,114 +99,60 @@ void buzzManualHigh(int ms) {
   digitalWrite(VIBRATION_PIN, LOW);
 }
 
-void drawStickman(int x, int y, uint16_t color, bool step) {
-  // Clear a bounding box for redrawing
-  tft->fillRect(x - 15, y - 10, 40, 70, TFT_BLACK);
-
-  // Head (radius 10)
-  tft->drawCircle(x, y, 10, color);
-
-  // Body
-  tft->drawLine(x, y + 10, x, y + 40, color);
-
-  // Arms (horizontal)
-  tft->drawLine(x - 10, y + 20, x + 10, y + 20, color);
-
-  // Legs: alternate for walking effect
-  if (step) {
-    // Step position A
-    tft->drawLine(x, y + 40, x - 8, y + 60, color); // left leg
-    tft->drawLine(x, y + 40, x + 8, y + 50, color); // right leg slightly bent
-  } else {
-    // Step position B (swap legs)
-    tft->drawLine(x, y + 40, x - 8, y + 50, color);
-    tft->drawLine(x, y + 40, x + 8, y + 60, color);
-  }
-}
-
-void updateStickman() {
-  unsigned long now = millis();
-
-  if (walkingPaused) {
-    if (now - pauseStartTime >= 2000) {
-      stickmanX = -20;
-      walkingPaused = false;
-    }
-    return;
-  }
-
-  if (now - lastFrameTime >= 100) {
-    stickmanX += 6;
-    stepToggle = !stepToggle;
-
-    if (stickmanX > 240 + 20) {
-      walkingPaused = true;
-      pauseStartTime = now;
-      return;
-    }
-
-    drawStickman(stickmanX, CENTRE_SECOND, TFT_WHITE, stepToggle);
-    lastFrameTime = now;
-  }
-}
 
 void setup() {
-  Serial.begin(115200);
-  SerialBT.begin("FeelTheSportWatch");
-  pinMode(VIBRATION_PIN, OUTPUT);
+    Serial.begin(115200);
+    SerialBT.begin("Actuator_Watch");
+    pinMode(VIBRATION_PIN, OUTPUT);
 
-  //Initialize screen and power
-  ttgo = TTGOClass::getWatch();
-  ttgo->begin();
-  ttgo->openBL(); //Turn on backlight
+    ttgo = TTGOClass::getWatch();
+    ttgo->begin();
+    ttgo->openBL();
+    ttgo->lvgl_begin();
 
-  tft = ttgo->tft;
-  power = ttgo->power;
+    tft = ttgo->tft;
+    power = ttgo->power;
 
-  tft->fillScreen(TFT_BLACK);
-  tft->setTextFont(2);
-  tft->setTextSize(2);
-  tft->setTextColor(TFT_WHITE);
-  tft->setCursor(30, TOP);
+    //Set background color to white
+    tft->fillScreen(TFT_WHITE);
 
-  //Draw title
-  tft->println("Feel the Sport");
+    setupUI();
 
-  Serial.println("Bluetooth ready. Waiting for command...");
-  showBatteryStatus();
+    Serial.println("Setup complete.");
 }
 
 void loop() {
-  updateStickman();
+    lv_task_handler();        //Update LVGL
+    updateBatteryStatus();    //Update battery info
 
-  //Read from Bluetooth
-  if (SerialBT.available()) {
-    String cmd = SerialBT.readStringUntil('\n');
-    Serial.print("BT Received: ");
-    Serial.println(cmd);
+    //Read from Bluetooth
+    if (SerialBT.available()) {
+      String cmd = SerialBT.readStringUntil('\n');
+      Serial.print("BT Received: ");
+      Serial.println(cmd);
 
-    int commaIndex = cmd.indexOf(',');
-    if (commaIndex != -1) {
-      int duration = cmd.substring(0, commaIndex).toInt();
-      String strength = cmd.substring(commaIndex + 1);
-      strength.trim();
+      int commaIndex = cmd.indexOf(',');
+      if (commaIndex != -1) {
+        int duration = cmd.substring(0, commaIndex).toInt();
+        String strength = cmd.substring(commaIndex + 1);
+        strength.trim();
 
-      if (strength.equalsIgnoreCase("Low")) {
-        // SerialBT.println("ACK");
-        buzzManualLow(duration);
-      } else if (strength.equalsIgnoreCase("High")) {
-        // SerialBT.println("ACK");
-        buzzManualHigh(duration);
-      } else if (strength.equalsIgnoreCase("Med")){
-        buzzManualMed(duration);
+        if (strength.equalsIgnoreCase("Low")) {
+          // SerialBT.println("ACK");
+          buzzManualLow(duration);
+        } else if (strength.equalsIgnoreCase("High")) {
+          // SerialBT.println("ACK");
+          buzzManualHigh(duration);
+        } else if (strength.equalsIgnoreCase("Med")){
+          buzzManualMed(duration);
+        } else {
+          Serial.println("Invalid strength. Use Low/High.");
+        }
+        updateBatteryStatus(); //Refresh battery status
       } else {
-        Serial.println("Invalid strength. Use Low/High.");
+        Serial.println("Invalid format. Use <duration>,<Low|High>");
       }
-      showBatteryStatus(); //Refresh battery status
-    } else {
-      Serial.println("Invalid format. Use <duration>,<Low|High>");
     }
-  }
 
-  delay(10); //keep loop responsive
+    delay(10); //Reduce flicker and save CPU
 }
