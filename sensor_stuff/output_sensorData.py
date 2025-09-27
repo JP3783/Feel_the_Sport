@@ -7,8 +7,8 @@ COM_PORT = 'COM6'     #Bluetooth serial port - adjust if needed
                       #How? Upload arduino program and pair watch with laptop. See Device Manager for COM Ports
 BAUD_RATE = 115200
 
-CSV_FILENAME = "tennis_hits.csv"
-DURATION_SECONDS = 10
+CSV_FILENAME = "tennisHits_male_camera1.csv"
+DURATION_SECONDS = 300
 DELAY_SECONDS = 5 #delay before start writing to csv
 
 try:

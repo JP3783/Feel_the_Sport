@@ -14,8 +14,6 @@ BluetoothSerial SerialBT;
 AXP20X_Class *power;
 char buf[128];
 
-// bool rtcIrq = false;
-
 unsigned long lastHitTime = 0;
 const float hitThreshold = 2.0;       //Hit threshold in g
 const int hitCooldownMs = 300;        //Cooldown between hits
@@ -36,36 +34,6 @@ void showBatteryStatus(){
   }
 }
 
-//Display time and date
-void displayTime(){
-  snprintf(buf, sizeof(buf), "%s", ttgo->rtc->formatDateTime());
-  tft->fillRect(0, 0, 240, 40, TFT_BLACK); //Clear previous time area
-  tft->setCursor(0, 0);
-  tft->setTextColor(TFT_YELLOW, TFT_BLACK);
-  tft->println(buf);
-}
-
-void syncRTCWithLaptopTime(){
-  const char *dateStr = __DATE__;
-    const char *timeStr = __TIME__;
-
-    char monthStr[4];
-    int year, day, hour, minute, second;
-    int month;
-
-    sscanf(dateStr, "%s %d %d", monthStr, &day, &year);
-    sscanf(timeStr, "%d:%d:%d", &hour, &minute, &second);
-
-    //Convert month string to number
-    const char *months = "JanFebMarAprMayJunJulAugSepOctNovDec";
-    month = (strstr(months, monthStr) - months) / 3 + 1;
-
-    //Set RTC
-    ttgo->rtc->setDateTime(year, month, day, hour, minute, second);
-
-    Serial.printf("RTC synced to compile time: %04d-%02d-%02d %02d:%02d:%02d\n", year, month, day, hour, minute, second);
-}
-
 void setup() {
   Serial.begin(115200);
   
@@ -83,9 +51,6 @@ void setup() {
   ttgo->bma->begin();
   ttgo->bma->enableAccel();
 
-  //Call syncwithrtc
-  syncRTCWithLaptopTime();
-
   Serial.println("Tennis hit detection started...");
 
   //Start Bluetooth with this device name
@@ -94,18 +59,15 @@ void setup() {
 
   tft->setTextFont(2);
   tft->setTextSize(2);
+  tft->setTextColor(TFT_WHITE, TFT_BLACK);
+  tft->setCursor(0, 0);
+  tft->fillRect(0, 0, 240, 20, TFT_BLACK); //Clear the top area
+  tft->println("Feel the Sport");
+
   showBatteryStatus();
 }
 
 void loop() {
-  //Update time display
-  static unsigned long lastTimeUpdate = 0;
-  if(millis() - lastTimeUpdate > 1000){
-    displayTime();
-    lastTimeUpdate = millis();
-  }
-
-
   if (ttgo->bma->getAccel(accelData)) {
     //Convert to g
     float ax = accelData.x * 0.00098;
@@ -138,8 +100,6 @@ void loop() {
       Serial.println(mag, 3);
     }
   }
-
-  // showBatteryStatus();
 
   delay(10);  //~100 Hz sampling
 }
