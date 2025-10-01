@@ -1,7 +1,7 @@
 import serial
 import time
 
-COM_PORT = 'COM6'  # Adjust if needed
+COM_PORT = 'COM5'  # Adjust if needed
 BAUD_RATE = 115200
 
 try:

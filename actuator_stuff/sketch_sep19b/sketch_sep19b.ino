@@ -86,10 +86,10 @@ void buzzManualMed(int ms) {
   int elapsed = 0;
   while (elapsed < ms) {
     digitalWrite(VIBRATION_PIN, HIGH);
-    delay(50);
+    delay(20);
     digitalWrite(VIBRATION_PIN, LOW);
-    delay(180);
-    elapsed += 250;
+    delay(80);
+    elapsed += 100;
   }
 }
 

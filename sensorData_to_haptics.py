@@ -5,10 +5,10 @@ from datetime import datetime
 import os
 
 
-COM_PORT = 'COM6'   #Adjust if needed
+COM_PORT = 'COM5'   #Adjust if needed
 BAUD_RATE = 115200
-CSV_FILE = "sync_test2.csv"
-VIDEO_FILE = "sync_test2.mp4"
+CSV_FILE = "tennisHits_male_camera1.csv"
+VIDEO_FILE = "C:/Users/GGPC/Feel_the_Sport_2025/new.mp4"
 DURATION_MS = 10
 
 OUTPUT_FILE = "processed_hits.csv"
@@ -84,7 +84,7 @@ try:
             time.sleep(1)
         # print("Go!")
         os.startfile(VIDEO_FILE)
-        time.sleep(0.5)
+        time.sleep(0.23)
         start_perf = time.perf_counter()
 
         #Send events from processed CSV
