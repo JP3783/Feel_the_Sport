@@ -6,7 +6,6 @@
 #include <stdio.h>
 #include <string.h>
 
-
 TTGOClass *ttgo = TTGOClass::getWatch();
 TFT_eSPI *tft;
 Accel accelData;
@@ -63,11 +62,27 @@ void setup() {
   tft->setCursor(0, 0);
   tft->fillRect(0, 0, 240, 20, TFT_BLACK); //Clear the top area
   tft->println("Feel the Sport");
-
   showBatteryStatus();
+
+  tft->setCursor(0, 30);
+  tft->println("Sensor");
+
+  tft->setTextFont(1);
+  tft->setTextSize(2);
 }
 
 void loop() {
+  const char* baseText = "Transmitting data";
+  //Animate the dots
+  for (int dots = 0; dots <= 3; dots++) {
+    tft->fillRect(0, 150, 320, 20, TFT_BLACK);
+    // tft->fillRect(0, 0, 240, 20, TFT_BLACK); //Clear the top area
+    tft->setCursor(0, 150);
+    tft->print(baseText);
+    for (int i = 0; i < dots; i++) tft->print(".");
+    delay(500);
+  }
+
   if (ttgo->bma->getAccel(accelData)) {
     //Convert to g
     float ax = accelData.x * 0.00098;
