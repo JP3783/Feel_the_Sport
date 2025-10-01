@@ -7,7 +7,7 @@ COM_PORT = 'COM6'     #Bluetooth serial port - adjust if needed            COM6 
                       #How? Upload arduino program and pair watch with laptop. See Device Manager for COM Ports
 BAUD_RATE = 115200
 
-CSV_FILENAME = "tennisHits.csv"
+CSV_FILENAME = "tennisHits21025.csv"
 DURATION_SECONDS = 10 #300
 DELAY_SECONDS = 5 #delay before start writing to csv
 
@@ -32,7 +32,7 @@ try:
 
             logging_start_time  = time.time()
 
-            #Read and save for one minute
+            #Read and save for DURATION_SECONDS
             while time.time() - logging_start_time  < DURATION_SECONDS:
                 if ser.in_waiting:
                     line = ser.readline().decode('utf-8', errors='ignore').strip()

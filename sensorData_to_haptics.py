@@ -7,8 +7,8 @@ import os
 
 COM_PORT = 'COM6'   #Adjust if needed
 BAUD_RATE = 115200
-CSV_FILE = "sync_test.csv"
-VIDEO_FILE = "sync_test.mp4"
+CSV_FILE = "sync_test2.csv"
+VIDEO_FILE = "sync_test2.mp4"
 DURATION_MS = 10
 
 OUTPUT_FILE = "processed_hits.csv"
