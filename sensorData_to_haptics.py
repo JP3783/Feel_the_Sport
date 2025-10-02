@@ -5,10 +5,11 @@ from datetime import datetime
 import os
 
 
-COM_PORT = 'COM5'   #Adjust if needed
+COM_PORT = 'COM6'   #Adjust if needed       PC is COM5        Laptop is COM6
 BAUD_RATE = 115200
-CSV_FILE = "tennisHits_male_camera1.csv"
-VIDEO_FILE = "C:/Users/GGPC/Feel_the_Sport_2025/new.mp4"
+CSV_FILE = "tennisHits_male_camera2.csv"
+# VIDEO_FILE = "C:/Users/GGPC/Feel_the_Sport_2025/new.mp4"
+VIDEO_FILE = "C:/Users/jpout/Feel_the_Sport_2025/male_camera2_TRIM.mp4"
 DURATION_MS = 10
 
 OUTPUT_FILE = "processed_hits.csv"
@@ -79,13 +80,17 @@ try:
         #Countdown before starting playback
         for sec in range(5, 0, -1):
             print(f"Starting in {sec}...")
-            # if sec == 1:
-                # os.startfile(VIDEO_FILE)
             time.sleep(1)
+
         # print("Go!")
-        os.startfile(VIDEO_FILE)
-        time.sleep(0.23)
+        # os.startfile(VIDEO_FILE)
+        # time.sleep(0.23) #sync on PC
+        # time.sleep(0.701) #maleCamera1 laptop
+        # time.sleep(1)
         start_perf = time.perf_counter()
+
+        time.sleep(0.51)
+        os.startfile(VIDEO_FILE)
 
         #Send events from processed CSV
         for _, row in out_df.iterrows():
