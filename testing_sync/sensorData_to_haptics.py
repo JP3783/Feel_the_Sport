@@ -7,9 +7,9 @@ import os
 
 COM_PORT = 'COM6'   #Adjust if needed       PC is COM5        Laptop is COM6
 BAUD_RATE = 115200
-CSV_FILE = "tennisHits_male_camera2.csv"
+CSV_FILE = "tennisHits_female_camera2.csv"
 # VIDEO_FILE = "C:/Users/GGPC/Feel_the_Sport_2025/new.mp4"
-VIDEO_FILE = "C:/Users/jpout/Feel_the_Sport_2025/male_camera2_TRIM.mp4"
+VIDEO_FILE = "C:/Users/jpout/Feel_the_Sport_2025/female_camera2_TRIM.mp4"
 DURATION_MS = 10
 
 OUTPUT_FILE = "processed_hits.csv"
@@ -19,7 +19,7 @@ def get_strength(mag):
     if mag >= 3:
         return "High"
     elif mag >= 2.5:
-        return "Med"
+        return "High"
     elif mag >= 2:
         return "Low"
     else:
@@ -83,14 +83,12 @@ try:
             time.sleep(1)
 
         # print("Go!")
-        # os.startfile(VIDEO_FILE)
-        # time.sleep(0.23) #sync on PC
-        # time.sleep(0.701) #maleCamera1 laptop
-        # time.sleep(1)
+        os.startfile(VIDEO_FILE)
+        # time.sleep(0.5) #maleCamera1 laptop
         start_perf = time.perf_counter()
 
-        time.sleep(0.51)
-        os.startfile(VIDEO_FILE)
+        # time.sleep(0.2)
+        # os.startfile(VIDEO_FILE)
 
         #Send events from processed CSV
         for _, row in out_df.iterrows():
