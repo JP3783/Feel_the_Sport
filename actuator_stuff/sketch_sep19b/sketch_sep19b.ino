@@ -16,8 +16,21 @@ lv_obj_t *titleLabel;
 
 static void event_handler(lv_obj_t *obj, lv_event_t event)
 {
-    if (event == LV_EVENT_CLICKED) {
-        Serial.println("Clicked");
+    switch (event)
+    {
+        case LV_EVENT_PRESSED:
+            Serial.println("Button pressed");
+            digitalWrite(VIBRATION_PIN, HIGH);  //start buzzing
+            break;
+
+        case LV_EVENT_RELEASED:
+        case LV_EVENT_PRESS_LOST:  //in case finger slides away
+            Serial.println("Button released");
+            digitalWrite(VIBRATION_PIN, LOW);   //stop buzzing
+            break;
+
+        default:
+            break;
     }
 }
 
@@ -61,7 +74,7 @@ void setupUI() {
     lv_obj_align(btn, NULL, LV_ALIGN_CENTER, 0, 0); //center of screen
 
     lv_obj_t *label = lv_label_create(btn, NULL);
-    lv_label_set_text(label, "Start");
+    lv_label_set_text(label, "Buzz");
 
     //Battery label at bottom
     batteryLabel = lv_label_create(lv_scr_act(), NULL);
