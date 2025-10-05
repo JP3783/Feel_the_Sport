@@ -7,8 +7,8 @@ import os
 # ====== CONFIG ======
 COM_PORT = 'COM6'   # Adjust if needed
 BAUD_RATE = 115200
-CSV_FILE = "fc2_3min.csv"
-VIDEO_FILE = "C:/Users/jpout/Feel_the_Sport_2025/FC2_3min.mp4"
+CSV_FILE = "mc1_3min.csv"
+VIDEO_FILE = "C:/Users/jpout/Feel_the_Sport_2025/MC1_3min.mp4"
 # ====================
 
 
@@ -35,16 +35,16 @@ try:
     with serial.Serial(COM_PORT, BAUD_RATE, timeout=1) as ser:
         print(f"[INFO] Connected to {COM_PORT}")
 
-        # # -----------MC1-------------
-        # #countdown
-        # for sec in range(5, 0, -1):
-        #     print(f"Starting in {sec}...")
-        #     time.sleep(1)
-        # #start video
-        # os.startfile(VIDEO_FILE)
-        # time.sleep(2.3)
-        # start_perf = time.perf_counter()
-        # print("[INFO] Video started, sending vibration events...")
+        # -----------MC1-------------
+        #countdown
+        for sec in range(5, 0, -1):
+            print(f"Starting in {sec}...")
+            time.sleep(1)
+        #start video
+        os.startfile(VIDEO_FILE)
+        time.sleep(2.3)
+        start_perf = time.perf_counter()
+        print("[INFO] Video started, sending vibration events...")
 
 
         # # -----------MC2-------------
@@ -71,16 +71,16 @@ try:
         # start_perf = time.perf_counter()
         # print("[INFO] Video started, sending vibration events...")
 
-        # -----------FC2-------------
-        #countdown
-        for sec in range(5, 0, -1):
-            print(f"Starting in {sec}...")
-            time.sleep(1)
-        #start video
-        os.startfile(VIDEO_FILE)
-        time.sleep(4.5)
-        start_perf = time.perf_counter()
-        print("[INFO] Video started, sending vibration events...")
+        # # -----------FC2-------------
+        # #countdown
+        # for sec in range(5, 0, -1):
+        #     print(f"Starting in {sec}...")
+        #     time.sleep(1)
+        # #start video
+        # os.startfile(VIDEO_FILE)
+        # time.sleep(4.5)
+        # start_perf = time.perf_counter()
+        # print("[INFO] Video started, sending vibration events...")
 
         
 
